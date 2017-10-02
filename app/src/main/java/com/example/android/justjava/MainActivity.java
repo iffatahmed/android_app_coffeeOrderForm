@@ -9,9 +9,12 @@
  */
 
 package com.example.android.justjava;
+import android.content.Intent;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.CheckBox;
@@ -156,8 +159,22 @@ public class MainActivity extends AppCompatActivity {
         TextView priceTextView = (TextView) findViewById(R.id.order_summary_text_view);
         EditText edit = (EditText)findViewById(R.id.name_editText);
         String strName = edit.getText().toString();
+        String emailID="iffat@simula.no";
+        String orderEmailText="Name:"  +strName+ "\nCoffee(s): " + q + " with topping: " +checkBoxValString+ "\nTotal Price: " + tPV + "\nThank you for your order!";
+        priceTextView.setText(orderEmailText);
+        composeEmail(emailID,"Coffee order from"+strName, orderEmailText);
+    }
 
-        priceTextView.setText("Name:"  +strName+ "\nCoffee(s): " + q + " with topping: " +checkBoxValString+ "\nTotal Price: " + tPV + "\nThank you for your order!");
+    public void composeEmail(String addresses, String subject, String emailText) {
+        Intent intent = new Intent(Intent.ACTION_SENDTO);
+        intent.setData(Uri.parse("mailto:")); // only email apps should handle this
+        intent.putExtra(Intent.EXTRA_EMAIL, addresses);
+        intent.putExtra(Intent.EXTRA_SUBJECT, subject);
+        intent.putExtra(Intent.EXTRA_TEXT,emailText);
 
+        if (intent.resolveActivity(getPackageManager()) != null) {
+            startActivity(intent);
+            Log.v("Intent","Reached here");
+        }
     }
 }
